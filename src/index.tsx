@@ -7,15 +7,18 @@ import { ThemeProvider } from '@mui/material/styles'
 import { client } from './graphql'
 import './styles/index.css'
 import theme from './theme'
+import { BrowserRouter } from 'react-router-dom'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
-  <ApolloProvider client={client}>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
-  </ApolloProvider>,
+  <BrowserRouter>
+    <ApolloProvider client={client}>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </ApolloProvider>
+  </BrowserRouter>,
 )
 
 reportWebVitals()
