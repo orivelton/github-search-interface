@@ -15,7 +15,7 @@ export type PageInfo = {
 }
 
 export type RepoElement = {
-  repo: RepoInfo
+  repo?: RepoInfo
 }
 
 export type RepoInfo = {

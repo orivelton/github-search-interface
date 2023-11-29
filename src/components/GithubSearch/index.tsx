@@ -1,97 +1,93 @@
-import * as React from 'react'
+import React, { SyntheticEvent, useContext, useEffect, useState } from 'react'
 import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
-import { useQuery } from '@apollo/client'
-import { Repository } from '../../types/repository'
+import { useLazyQuery } from '@apollo/client'
 import { GET_REPO } from '../../graphql/query'
 import { MuiAlert } from '../MuiAlert'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import useDebounce from '../../hooks/useDebounce'
+import { FavoritesContext } from '../../hooks/FavoritesContext'
+import { RepoElement } from '../../types/repository'
 
 export function GithubSearch() {
-  const { loading, error, data } = useQuery<Repository>(GET_REPO, {
+  const [favorites, setFavorites] = useContext(FavoritesContext)
+  const [query, setQuery] = useState('')
+  const [searchResult, setSeachResult] = useState([])
+  const debouncedSearchTerm = useDebounce(query)
+  const [getRepo, { loading, error }] = useLazyQuery(GET_REPO, {
     variables: {
-      first: 100,
+      first: 30,
+      query: 'react',
     },
   })
+
+  const handleSearch = async (
+    _: SyntheticEvent<Element, Event>,
+    newValue: string,
+  ) => {
+    if (!newValue) return
+    setQuery(newValue)
+  }
+
+  useEffect(() => {
+    ;(async () => {
+      const { data } =
+        (await getRepo({
+          variables: {
+            first: 20,
+            query: debouncedSearchTerm,
+          },
+        })) || {}
+
+      data?.search.repos && setSeachResult(data.search.repos)
+    })()
+  }, [debouncedSearchTerm, getRepo])
+
+  const handleFavoritesContext = (option: any) => {
+    const hasRepo = favorites.filter(
+      (item: any) => item.id === option.id,
+    ).length
+
+    if (hasRepo) {
+      setFavorites((prev: any) =>
+        prev.filter((item: any) => item.id !== option.id),
+      )
+    } else {
+      setFavorites((prev: any) => [...prev, option])
+    }
+  }
 
   if (error) return <MuiAlert severity='error' message={error?.message} />
 
   return (
     <Autocomplete
+      id='tags'
       multiple
       fullWidth
-      id='tags'
-      options={top100Films}
+      options={searchResult}
+      loading={loading}
+      limitTags={5}
       disableCloseOnSelect
-      getOptionLabel={(option) => option.title}
+      onInputChange={handleSearch}
+      getOptionLabel={(option: any) => option?.repo.name}
+      disableClearable
       renderOption={(props, option, { selected }) => (
-        <li {...props}>
+        <li {...{ ...props, key: option.repo.id }}>
           <Checkbox
             icon={<FavoriteBorderIcon fontSize='small' />}
             checkedIcon={<FavoriteIcon fontSize='small' />}
             style={{ marginRight: 8 }}
             checked={selected}
+            onChange={() => handleFavoritesContext(option.repo)}
           />
-          {option.title}
+          {option.repo.name}
         </li>
       )}
-      style={{ width: 500 }}
       renderInput={(params) => (
         <TextField {...params} label='Search' placeholder='Favorites' />
       )}
     />
   )
 }
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 },
-  { title: '12 Angry Men', year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: 'Pulp Fiction', year: 1994 },
-  {
-    title: 'The Lord of the Rings: The Return of the King',
-    year: 2003,
-  },
-  { title: 'The Good, the Bad and the Ugly', year: 1966 },
-  { title: 'Fight Club', year: 1999 },
-  {
-    title: 'The Lord of the Rings: The Fellowship of the Ring',
-    year: 2001,
-  },
-  {
-    title: 'Star Wars: Episode V - The Empire Strikes Back',
-    year: 1980,
-  },
-  { title: 'Forrest Gump', year: 1994 },
-  { title: 'Inception', year: 2010 },
-  {
-    title: 'The Lord of the Rings: The Two Towers',
-    year: 2002,
-  },
-  { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
-  { title: 'Goodfellas', year: 1990 },
-  { title: 'The Matrix', year: 1999 },
-  { title: 'Seven Samurai', year: 1954 },
-  {
-    title: 'Star Wars: Episode IV - A New Hope',
-    year: 1977,
-  },
-  { title: 'City of God', year: 2002 },
-  { title: 'Se7en', year: 1995 },
-  { title: 'The Silence of the Lambs', year: 1991 },
-  { title: "It's a Wonderful Life", year: 1946 },
-  { title: 'Life Is Beautiful', year: 1997 },
-  { title: 'The Usual Suspects', year: 1995 },
-  { title: 'Léon: The Professional', year: 1994 },
-  { title: 'Spirited Away', year: 2001 },
-  { title: 'Saving Private Ryan', year: 1998 },
-  { title: 'Once Upon a Time in the West', year: 1968 },
-  { title: 'American History X', year: 1998 },
-  { title: 'Interstellar', year: 2014 },
-]

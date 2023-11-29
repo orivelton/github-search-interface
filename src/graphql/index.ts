@@ -7,7 +7,7 @@ const httpLink = createHttpLink({
 })
 
 const authLink = setContext((_, { headers }) => {
-  const token = process.env?.REACT_APP_GITHUB_TOKEN
+  const token = localStorage.getItem('token')
 
   return {
     headers: {
