@@ -2,6 +2,8 @@
 
 This project list repository from Github in a table where you can filter and sorte by name, stars, and forks.
 
+[DEMO](https://orivelton.github.io/github-search-interface/)
+
 ## Available Scripts
 
 In the project directory, you can run:

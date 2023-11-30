@@ -18,6 +18,12 @@ export type RepoElement = {
   repo?: RepoInfo
 }
 
+export type RepoOptionElement = {
+  options: {
+    repo: RepoInfo
+  }
+}
+
 export type RepoInfo = {
   description: string
   forkCount: number

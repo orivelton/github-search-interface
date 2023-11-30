@@ -45,17 +45,17 @@ export function GithubSearch() {
     })()
   }, [debouncedSearchTerm, getRepo])
 
-  const handleFavoritesContext = (option: any) => {
+  const handleFavoritesContext = (option: { name: string; id: string }) => {
     const hasRepo = favorites.filter(
-      (item: any) => item.id === option.id,
+      (item: RepoInfo) => item.id === option.id,
     ).length
 
     if (hasRepo) {
-      setFavorites((prev: any) =>
-        prev.filter((item: any) => item.id !== option.id),
+      setFavorites((prev: RepoInfo[]) =>
+        prev.filter((item: RepoInfo) => item.id !== option.id),
       )
     } else {
-      setFavorites((prev: any) => [...prev, option])
+      setFavorites((prev: RepoInfo[]) => [...prev, option])
     }
   }
 
@@ -70,7 +70,9 @@ export function GithubSearch() {
       loading={loading}
       disableCloseOnSelect
       onInputChange={handleSearch}
-      getOptionLabel={(option: any) => option?.repo.name}
+      getOptionLabel={(option: { repo: { name: string; id: string } }) =>
+        option?.repo.name
+      }
       disableClearable
       renderOption={(props, option) => {
         const idsSelected = favorites.map((item: RepoInfo) => item.id)
