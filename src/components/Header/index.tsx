@@ -1,18 +1,20 @@
-import { Badge, Paper } from '@mui/material'
-import { RiGitRepositoryLine } from 'react-icons/ri'
-import { MdFavorite, MdHome } from 'react-icons/md'
-import { Link } from 'react-router-dom'
-
 import React, { useContext } from 'react'
-import AppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import Toolbar from '@mui/material/Toolbar'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
+import { Link } from 'react-router-dom'
+import {
+  Badge,
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+} from '@mui/material'
+import { MdFavorite } from 'react-icons/md'
 import { FavoritesContext } from '../../hooks/FavoritesContext'
 
 export function Header() {
-  const [favorites, setFavorites] = useContext(FavoritesContext)
+  const [favorites] = useContext(FavoritesContext)
+
+  console.log(favorites?.length)
 
   return (
     <AppBar position='static' sx={{ mb: 2 }}>
@@ -23,7 +25,7 @@ export function Header() {
           </Link>
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+        <Box>
           <IconButton
             size='large'
             aria-label='show 4 new mails'

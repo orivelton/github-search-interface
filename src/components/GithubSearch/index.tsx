@@ -9,7 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import useDebounce from '../../hooks/useDebounce'
 import { FavoritesContext } from '../../hooks/FavoritesContext'
-import { RepoElement } from '../../types/repository'
+import { RepoInfo } from '../../types/repository'
 
 export function GithubSearch() {
   const [favorites, setFavorites] = useContext(FavoritesContext)
@@ -68,23 +68,26 @@ export function GithubSearch() {
       fullWidth
       options={searchResult}
       loading={loading}
-      limitTags={5}
       disableCloseOnSelect
       onInputChange={handleSearch}
       getOptionLabel={(option: any) => option?.repo.name}
       disableClearable
-      renderOption={(props, option, { selected }) => (
-        <li {...{ ...props, key: option.repo.id }}>
-          <Checkbox
-            icon={<FavoriteBorderIcon fontSize='small' />}
-            checkedIcon={<FavoriteIcon fontSize='small' />}
-            style={{ marginRight: 8 }}
-            checked={selected}
-            onChange={() => handleFavoritesContext(option.repo)}
-          />
-          {option.repo.name}
-        </li>
-      )}
+      renderOption={(props, option) => {
+        const idsSelected = favorites.map((item: RepoInfo) => item.id)
+        const isSelected = idsSelected.includes(option.repo.id)
+        return (
+          <li {...{ ...props, key: option.repo.id }}>
+            <Checkbox
+              icon={<FavoriteBorderIcon fontSize='small' />}
+              checkedIcon={<FavoriteIcon fontSize='small' />}
+              style={{ marginRight: 8 }}
+              checked={isSelected}
+              onChange={() => handleFavoritesContext(option.repo)}
+            />
+            {option.repo.name}
+          </li>
+        )
+      }}
       renderInput={(params) => (
         <TextField {...params} label='Search' placeholder='Favorites' />
       )}

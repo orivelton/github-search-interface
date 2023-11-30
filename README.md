@@ -2,7 +2,6 @@
 
 This project list repository from Github in a table where you can filter and sorte by name, stars, and forks.
 
-
 ## Available Scripts
 
 In the project directory, you can run:
@@ -38,6 +37,6 @@ Create image:
 Run image
 `docker run -p 3000:3000 --name explorer-repository explorer-repository:latest`
 
-### .env file
+### GITHUB_TOKEN
 
-You can find a `.env.example` file that contains the `REACT_APP_GITHUB_TOKEN` variable. Generate your personal token on https://docs.github.com/en/graphql/guides/forming-calls-with-graphql#authenticating-with-a-personal-access-token
+Generate your personal token on https://docs.github.com/en/graphql/guides/forming-calls-with-graphql#authenticating-with-a-personal-access-token

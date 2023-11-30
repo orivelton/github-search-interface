@@ -25,4 +25,5 @@ export type RepoInfo = {
   name: string
   stargazerCount: number
   url: string
+  rating?: number | null
 }

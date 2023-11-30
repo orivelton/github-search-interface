@@ -1,4 +1,4 @@
-import React, { Dispatch, useState } from 'react'
+import React, { useState } from 'react'
 import { Container } from '@mui/material'
 import { Header } from './components/Header'
 import { GithubSearch } from './components/GithubSearch'
